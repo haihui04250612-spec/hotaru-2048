@@ -187,29 +187,62 @@ function draw(){
 
       d.innerHTML=n?`<div>${n}</div><div class="small">${labels[n]||""}</div>`:"";
 
-      if(n===2)d.style.background="#284b3f";
+      if(n===2){
+  d.style.background="#284b3f";
+  d.style.boxShadow="0 0 12px rgba(95,255,180,.25)";
+}
 
-if(n===4)d.style.background="#315a7d";
+if(n===4){
+  d.style.background="#315a7d";
+  d.style.boxShadow="0 0 14px rgba(120,200,255,.25)";
+}
 
-if(n===8)d.style.background="#3f5d8a";
+if(n===8){
+  d.style.background="#3f5d8a";
+  d.style.boxShadow="0 0 16px rgba(180,210,255,.28)";
+}
 
-if(n===16)d.style.background="#5965a5";
+if(n===16){
+  d.style.background="#5965a5";
+  d.style.boxShadow="0 0 18px rgba(220,220,255,.3)";
+}
 
-if(n===32)d.style.background="#8070b8";
+if(n===32){
+  d.style.background="#8070b8";
+  d.style.boxShadow="0 0 20px rgba(210,180,255,.32)";
+}
 
-if(n===64)d.style.background="#c08a4a";
+if(n===64){
+  d.style.background="#c08a4a";
+  d.style.boxShadow="0 0 22px rgba(255,190,100,.35)";
+}
 
-if(n===128)d.style.background="#d8a94f";
+if(n===128){
+  d.style.background="#d8a94f";
+  d.style.boxShadow="0 0 24px rgba(255,210,120,.4)";
+}
 
-if(n===256)d.style.background="#e5bf63";
+if(n===256){
+  d.style.background="#e5bf63";
+  d.style.boxShadow="0 0 26px rgba(255,225,140,.45)";
+}
 
-if(n===512)d.style.background="#f0d878";
+if(n===512){
+  d.style.background="#f0d878";
+  d.style.color="#111";
+  d.style.boxShadow="0 0 30px rgba(255,235,160,.55)";
+}
 
-if(n===1024)d.style.background="#ffe48a";
+if(n===1024){
+  d.style.background="#ffe48a";
+  d.style.color="#111";
+  d.style.boxShadow="0 0 36px rgba(255,235,150,.7)";
+}
 
 if(n>=2048){
   d.style.background="#fff2b0";
   d.style.color="#111";
+  d.style.boxShadow="0 0 45px rgba(255,245,180,.9)";
 }
 
       board.appendChild(d);
