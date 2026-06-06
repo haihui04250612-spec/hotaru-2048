@@ -156,6 +156,12 @@ button{
 
 <div id="stars"></div>
 
+<div class="firefly-bg"></div>
+<div class="firefly-bg"></div>
+<div class="firefly-bg"></div>
+<div class="firefly-bg"></div>
+<div class="firefly-bg"></div>
+
 <h1>🌌 萤火虫2048</h1>
 <div id="score">Score: 0</div>
 <div id="board"></div>
@@ -180,7 +186,74 @@ const melody=[
   440.00,523.25,587.33,659.25,
   783.99,659.25,587.33,523.25
 ];
+.firefly-bg{
+  position:fixed;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#f6d878;
 
+  box-shadow:
+    0 0 10px #f6d878,
+    0 0 20px #f6d878;
+
+  opacity:.8;
+  pointer-events:none;
+  z-index:1;
+
+  animation:
+    floatFirefly 12s linear infinite,
+    blinkFirefly 2s ease-in-out infinite;
+}
+
+.firefly-bg:nth-of-type(1){
+  left:10%;
+  top:80%;
+}
+
+.firefly-bg:nth-of-type(2){
+  left:25%;
+  top:60%;
+}
+
+.firefly-bg:nth-of-type(3){
+  left:70%;
+  top:75%;
+}
+
+.firefly-bg:nth-of-type(4){
+  left:85%;
+  top:40%;
+}
+
+.firefly-bg:nth-of-type(5){
+  left:55%;
+  top:85%;
+}
+
+@keyframes floatFirefly{
+  0%{
+    transform:translate(0,0);
+  }
+
+  50%{
+    transform:translate(30px,-60px);
+  }
+
+  100%{
+    transform:translate(0,0);
+  }
+}
+
+@keyframes blinkFirefly{
+  0%,100%{
+    opacity:.25;
+  }
+
+  50%{
+    opacity:1;
+  }
+}
 function playNote(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
