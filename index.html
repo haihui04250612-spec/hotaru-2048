@@ -463,6 +463,27 @@ async function unlockSound(){
 }
 
 document.body.addEventListener("touchstart",unlockSound,{once:true});
+function testSound(){
+(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+
+  audioCtx.resume();
+
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.type="sine";
+  osc.frequency.value=880;
+
+  gain.gain.value=0.8;
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+1);
+}
 </script>
 </body>
 </html>
