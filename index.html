@@ -430,10 +430,10 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
-    playNote();
+    setTimeout(playNote,10);
     add();
     draw();
-  }
+}
 }
 
 document.addEventListener("keydown",e=>{
