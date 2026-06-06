@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>萤火虫2048</title>
+<title>给小由的萤火虫</title>
 
 <style>
 body{
@@ -229,12 +229,13 @@ const melody=[
   783.99,659.25,587.33,523.25
 ];
 
-async function unlockNoteSound(){
+function initSound(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   }
+
   if(audioCtx.state==="suspended"){
-    await audioCtx.resume();
+    audioCtx.resume();
   }
 }
 
@@ -251,7 +252,7 @@ function playNote(){
   osc.frequency.value=freq;
 
   gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.08,audioCtx.currentTime+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.06,audioCtx.currentTime+0.01);
   gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.22);
 
   osc.connect(gain);
@@ -262,7 +263,7 @@ function playNote(){
 }
 
 async function toggleMusic(){
-  await unlockNoteSound();
+  initSound();
 
   if(musicPlaying){
     bgm.pause();
@@ -270,6 +271,7 @@ async function toggleMusic(){
     musicBtn.textContent="🔊 开音乐";
   }else{
     try{
+      bgm.volume=0.25;
       await bgm.play();
       musicPlaying=true;
       musicBtn.textContent="🔇 关音乐";
@@ -294,6 +296,7 @@ function add(){
       if(!grid[r][c]) empty.push([r,c]);
     }
   }
+
   if(!empty.length)return;
 
   let [r,c]=empty[Math.floor(Math.random()*empty.length)];
@@ -422,8 +425,8 @@ function slide(row,lineIndex=null,dir=null){
   return row;
 }
 
-async function move(dir){
-  await unlockNoteSound();
+function move(dir){
+  initSound();
 
   let old=JSON.stringify(grid);
   mergedCells=[];
@@ -476,8 +479,14 @@ board.addEventListener("touchmove",e=>{
 board.addEventListener("touchend",e=>{
   let dx=e.changedTouches[0].clientX-startX;
   let dy=e.changedTouches[0].clientY-startY;
-  if(Math.abs(dx)>Math.abs(dy)) move(dx>0?"right":"left");
-  else move(dy>0?"down":"up");
+
+  if(Math.abs(dx)<20 && Math.abs(dy)<20)return;
+
+  if(Math.abs(dx)>Math.abs(dy)){
+    move(dx>0?"right":"left");
+  }else{
+    move(dy>0?"down":"up");
+  }
 });
 
 start();
