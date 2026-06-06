@@ -333,6 +333,13 @@ board.addEventListener("touchend",e=>{
 });
 
 start();
+
+document.body.addEventListener("touchstart",()=>{
+  document.getElementById("bgm").play();
+},{once:true});
 </script>
 </body>
+<audio id="bgm" loop>
+  <source src="music.flac" type="audio/flac">
+</audio>
 </html>
