@@ -124,6 +124,30 @@ button{
   50%{transform:scale(1.18);}
   100%{transform:scale(1);}
 }
+.firefly{
+  position:fixed;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#f6d878;
+  box-shadow:
+    0 0 8px #f6d878,
+    0 0 16px #f6d878;
+  pointer-events:none;
+  z-index:5;
+  animation: fly .8s ease-out forwards;
+}
+
+@keyframes fly{
+  0%{
+    transform:translate(0,0) scale(.6);
+    opacity:1;
+  }
+  100%{
+    transform:translate(var(--x),var(--y)) scale(0);
+    opacity:0;
+  }
+}
 </style>
 </head>
 
@@ -258,7 +282,24 @@ if(n>=2048){
   newCell=null;
   mergedCells=[];
 }
+function createFireflies(){
+  for(let i=0;i<8;i++){
+    const f=document.createElement("div");
+    f.className="firefly";
 
+    f.style.left=(window.innerWidth/2)+"px";
+    f.style.top=(window.innerHeight/2)+"px";
+
+    f.style.setProperty("--x",(Math.random()*160-80)+"px");
+    f.style.setProperty("--y",(Math.random()*-160-40)+"px");
+
+    document.body.appendChild(f);
+
+    setTimeout(()=>{
+      f.remove();
+    },800);
+  }
+}
 function slide(row,lineIndex=null,dir=null){
   row=row.filter(n=>n);
 
@@ -266,7 +307,7 @@ function slide(row,lineIndex=null,dir=null){
     if(row[i]===row[i+1]){
       row[i]*=2;
       score+=row[i];
-
+createFireflies();
       if(dir==="left") mergedCells.push([lineIndex,i]);
       if(dir==="right") mergedCells.push([lineIndex,3-i]);
       if(dir==="up") mergedCells.push([i,lineIndex]);
