@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>给小由的萤火虫</title>
+<title>萤火虫2048</title>
 
 <style>
 body{
@@ -182,7 +182,7 @@ button{
 
 <body>
 
-<audio id="bgm" src="music.mp3" loop></audio>
+<audio id="bgm" src="bgm.mp3" loop></audio>
 
 <div id="stars"></div>
 
@@ -229,15 +229,15 @@ const melody=[
   783.99,659.25,587.33,523.25
 ];
 
-function initSound(){
+async function unlockNoteSound(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   }
-
   if(audioCtx.state==="suspended"){
-    audioCtx.resume();
+    await audioCtx.resume();
   }
 }
+
 function playNote(){
   if(!audioCtx) return;
 
@@ -249,9 +249,9 @@ function playNote(){
 
   osc.type="sine";
   osc.frequency.value=freq;
-initSound();
+
   gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.08,audioCtx.currentTime+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.28,audioCtx.currentTime+0.01);
   gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.22);
 
   osc.connect(gain);
@@ -262,6 +262,7 @@ initSound();
 }
 
 async function toggleMusic(){
+  await unlockNoteSound();
 
   if(musicPlaying){
     bgm.pause();
@@ -421,8 +422,8 @@ function slide(row,lineIndex=null,dir=null){
   return row;
 }
 
-function move(dir){
-  initSound();
+async function move(dir){
+  await unlockNoteSound();
 
   let old=JSON.stringify(grid);
   mergedCells=[];
@@ -480,17 +481,6 @@ board.addEventListener("touchend",e=>{
 });
 
 start();
-document.body.addEventListener(
-  "touchstart",
-  initSound,
-  { once:true }
-);
-
-document.body.addEventListener(
-  "click",
-  initSound,
-  { once:true }
-);
 </script>
 </body>
 </html>
