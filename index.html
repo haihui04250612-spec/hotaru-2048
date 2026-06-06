@@ -412,6 +412,20 @@ board.addEventListener("touchend",e=>{
 });
 
 start();
+
+function unlockSound(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+
+  if(audioCtx.state==="suspended"){
+    audioCtx.resume();
+  }
+
+  playNote();
+}
+
+document.body.addEventListener("touchstart",unlockSound,{once:true});
 </script>
 </body>
 </html>
