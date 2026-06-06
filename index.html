@@ -385,9 +385,10 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
-    add();
-    draw();
-  }
+  playNote();
+  add();
+  draw();
+}
 }
 
 document.addEventListener("keydown",e=>{
