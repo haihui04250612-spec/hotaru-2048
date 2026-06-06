@@ -191,7 +191,7 @@ button{
 <div id="score">Score: 0</div>
 <div id="board"></div>
 <button onclick="start()">重新开始</button>
-
+<button onclick="unlockSound()">🔊 开声音</button>
 <script>
 const labels={
   2:"🪲萤",4:"✨微光",8:"⭐星尘",16:"🌙月色",
@@ -440,16 +440,25 @@ board.addEventListener("touchend",e=>{
 
 start();
 
-function unlockSound(){
+async function unlockSound(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   }
 
-  if(audioCtx.state==="suspended"){
-    audioCtx.resume();
-  }
+  await audioCtx.resume();
 
-  playNote();
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.type="square";
+  osc.frequency.value=440;
+  gain.gain.value=0.5;
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+0.3);
 }
 
 document.body.addEventListener("touchstart",unlockSound,{once:true});
