@@ -237,6 +237,7 @@ const melody=[
 ];
 
 function playNote(){
+
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   }
@@ -247,18 +248,16 @@ function playNote(){
   const osc=audioCtx.createOscillator();
   const gain=audioCtx.createGain();
 
-  osc.type="triangle";
+  osc.type="sine";
   osc.frequency.value=freq;
 
-  gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.35,audioCtx.currentTime+0.02);
-  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.45);
+  gain.gain.value=0.6;
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
   osc.start();
-  osc.stop(audioCtx.currentTime+0.46);
+  osc.stop(audioCtx.currentTime+0.12);
 }
 
 function start(){
