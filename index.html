@@ -286,8 +286,10 @@ function createFireflies(){
     const f=document.createElement("div");
     f.className="firefly";
 
-    f.style.left=(window.innerWidth/2)+"px";
-    f.style.top=(window.innerHeight/2)+"px";
+    const rect=board.getBoundingClientRect();
+
+f.style.left=(rect.left+rect.width/2)+"px";
+f.style.top=(rect.top+rect.height/2)+"px";
 
     f.style.setProperty("--x",(Math.random()*160-80)+"px");
     f.style.setProperty("--y",(Math.random()*-160-40)+"px");
