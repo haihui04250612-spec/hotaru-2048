@@ -174,7 +174,40 @@ const labels={
 let grid,score,startX,startY;
 let newCell=null;
 let mergedCells=[];
+let audioCtx=null;
+let noteIndex=0;
 
+const melody=[
+  523.25,587.33,659.25,783.99,
+  659.25,587.33,523.25,392.00,
+  440.00,523.25,587.33,659.25,
+  783.99,659.25,587.33,523.25
+];
+
+function playNote(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+
+  const freq=melody[noteIndex % melody.length];
+  noteIndex++;
+
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.type="sine";
+  osc.frequency.value=freq;
+
+  gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.18,audioCtx.currentTime+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.35);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+0.36);
+}
 function start(){
   grid=Array.from({length:4},()=>Array(4).fill(0));
   score=0;
