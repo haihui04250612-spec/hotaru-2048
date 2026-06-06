@@ -124,6 +124,7 @@ button{
   50%{transform:scale(1.18);}
   100%{transform:scale(1);}
 }
+
 .firefly{
   position:fixed;
   width:6px;
@@ -139,15 +140,10 @@ button{
 }
 
 @keyframes fly{
-  0%{
-    transform:translate(0,0) scale(.6);
-    opacity:1;
-  }
-  100%{
-    transform:translate(var(--x),var(--y)) scale(0);
-    opacity:0;
-  }
+  0%{transform:translate(0,0) scale(.6);opacity:1;}
+  100%{transform:translate(var(--x),var(--y)) scale(0);opacity:0;}
 }
+
 .firefly-bg{
   position:fixed;
   width:8px;
@@ -164,67 +160,32 @@ button{
     floatFirefly 12s linear infinite,
     blinkFirefly 2s ease-in-out infinite;
 }
-.firefly-bg:nth-of-type(1){
-  left:10%;
-  top:80%;
-}
-
-.firefly-bg:nth-of-type(2){
-  left:25%;
-  top:60%;
-}
-
-.firefly-bg:nth-of-type(3){
-  left:70%;
-  top:75%;
-}
-
-.firefly-bg:nth-of-type(4){
-  left:85%;
-  top:40%;
-}
-
-.firefly-bg:nth-of-type(5){
-  left:55%;
-  top:85%;
-}
 
 @keyframes floatFirefly{
-  0%{
-    transform:translate(0,0);
-  }
-
-  50%{
-    transform:translate(30px,-60px);
-  }
-
-  100%{
-    transform:translate(0,0);
-  }
+  0%{transform:translate(0,0);}
+  50%{transform:translate(30px,-60px);}
+  100%{transform:translate(0,0);}
 }
 
 @keyframes blinkFirefly{
-  0%,100%{
-    opacity:.25;
-  }
-
-  50%{
-    opacity:1;
-  }
+  0%,100%{opacity:.25;}
+  50%{opacity:1;}
 }
 </style>
 </head>
 
 <body>
 
-
 <div id="stars"></div>
 
-<div class="firefly-bg"></div>
-<div class="firefly-bg"></div>
-<div class="firefly-bg"></div>
-<div class="firefly-bg"></div>
-<div class="firefly-bg"></div>
+<div class="firefly-bg" style="left:10%;top:80%;"></div>
+<div class="firefly-bg" style="left:25%;top:60%;"></div>
+<div class="firefly-bg" style="left:70%;top:75%;"></div>
+<div class="firefly-bg" style="left:85%;top:40%;"></div>
+<div class="firefly-bg" style="left:55%;top:85%;"></div>
+<div class="firefly-bg" style="left:35%;top:25%;"></div>
+<div class="firefly-bg" style="left:75%;top:20%;"></div>
+<div class="firefly-bg" style="left:15%;top:45%;"></div>
 
 <h1>🌌 萤火虫2048</h1>
 <div id="score">Score: 0</div>
@@ -237,7 +198,9 @@ const labels={
   32:"🎐风铃",64:"🌃夏夜",128:"📞电话",256:"📖日记",
   512:"💭想念",1024:"🌌小由已上线",2048:"💙愿妳平安而幸福"
 };
+
 const board=document.getElementById("board");
+
 let grid,score,startX,startY;
 let newCell=null;
 let mergedCells=[];
@@ -265,20 +228,9 @@ function playNote(){
   osc.type="triangle";
   osc.frequency.value=freq;
 
-  gain.gain.setValueAtTime(
-    0.001,
-    audioCtx.currentTime
-  );
-
-  gain.gain.exponentialRampToValueAtTime(
-    0.35,
-    audioCtx.currentTime+0.02
-  );
-
-  gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    audioCtx.currentTime+0.45
-  );
+  gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.35,audioCtx.currentTime+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.45);
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
@@ -286,6 +238,7 @@ function playNote(){
   osc.start();
   osc.stop(audioCtx.currentTime+0.46);
 }
+
 function start(){
   grid=Array.from({length:4},()=>Array(4).fill(0));
   score=0;
@@ -328,62 +281,52 @@ function draw(){
       d.innerHTML=n?`<div>${n}</div><div class="small">${labels[n]||""}</div>`:"";
 
       if(n===2){
-  d.style.background="#284b3f";
-  d.style.boxShadow="0 0 12px rgba(95,255,180,.25)";
-}
-
-if(n===4){
-  d.style.background="#315a7d";
-  d.style.boxShadow="0 0 14px rgba(120,200,255,.25)";
-}
-
-if(n===8){
-  d.style.background="#3f5d8a";
-  d.style.boxShadow="0 0 16px rgba(180,210,255,.28)";
-}
-
-if(n===16){
-  d.style.background="#5965a5";
-  d.style.boxShadow="0 0 18px rgba(220,220,255,.3)";
-}
-
-if(n===32){
-  d.style.background="#8070b8";
-  d.style.boxShadow="0 0 20px rgba(210,180,255,.32)";
-}
-
-if(n===64){
-  d.style.background="#c08a4a";
-  d.style.boxShadow="0 0 22px rgba(255,190,100,.35)";
-}
-
-if(n===128){
-  d.style.background="#d8a94f";
-  d.style.boxShadow="0 0 24px rgba(255,210,120,.4)";
-}
-
-if(n===256){
-  d.style.background="#e5bf63";
-  d.style.boxShadow="0 0 26px rgba(255,225,140,.45)";
-}
-
-if(n===512){
-  d.style.background="#f0d878";
-  d.style.color="#111";
-  d.style.boxShadow="0 0 30px rgba(255,235,160,.55)";
-}
-
-if(n===1024){
-  d.style.background="#ffe48a";
-  d.style.color="#111";
-  d.style.boxShadow="0 0 36px rgba(255,235,150,.7)";
-}
-
-if(n>=2048){
-  d.style.background="#fff2b0";
-  d.style.color="#111";
-  d.style.boxShadow="0 0 45px rgba(255,245,180,.9)";
-}
+        d.style.background="#284b3f";
+        d.style.boxShadow="0 0 12px rgba(95,255,180,.25)";
+      }
+      if(n===4){
+        d.style.background="#315a7d";
+        d.style.boxShadow="0 0 14px rgba(120,200,255,.25)";
+      }
+      if(n===8){
+        d.style.background="#3f5d8a";
+        d.style.boxShadow="0 0 16px rgba(180,210,255,.28)";
+      }
+      if(n===16){
+        d.style.background="#5965a5";
+        d.style.boxShadow="0 0 18px rgba(220,220,255,.3)";
+      }
+      if(n===32){
+        d.style.background="#8070b8";
+        d.style.boxShadow="0 0 20px rgba(210,180,255,.32)";
+      }
+      if(n===64){
+        d.style.background="#c08a4a";
+        d.style.boxShadow="0 0 22px rgba(255,190,100,.35)";
+      }
+      if(n===128){
+        d.style.background="#d8a94f";
+        d.style.boxShadow="0 0 24px rgba(255,210,120,.4)";
+      }
+      if(n===256){
+        d.style.background="#e5bf63";
+        d.style.boxShadow="0 0 26px rgba(255,225,140,.45)";
+      }
+      if(n===512){
+        d.style.background="#f0d878";
+        d.style.color="#111";
+        d.style.boxShadow="0 0 30px rgba(255,235,160,.55)";
+      }
+      if(n===1024){
+        d.style.background="#ffe48a";
+        d.style.color="#111";
+        d.style.boxShadow="0 0 36px rgba(255,235,150,.7)";
+      }
+      if(n>=2048){
+        d.style.background="#fff2b0";
+        d.style.color="#111";
+        d.style.boxShadow="0 0 45px rgba(255,245,180,.9)";
+      }
 
       board.appendChild(d);
     });
@@ -392,15 +335,16 @@ if(n>=2048){
   newCell=null;
   mergedCells=[];
 }
+
 function createFireflies(){
+  const rect=board.getBoundingClientRect();
+
   for(let i=0;i<8;i++){
     const f=document.createElement("div");
     f.className="firefly";
 
-    const rect=board.getBoundingClientRect();
-
-f.style.left=(rect.left+rect.width/2)+"px";
-f.style.top=(rect.top+rect.height/2)+"px";
+    f.style.left=(rect.left+rect.width/2)+"px";
+    f.style.top=(rect.top+rect.height/2)+"px";
 
     f.style.setProperty("--x",(Math.random()*160-80)+"px");
     f.style.setProperty("--y",(Math.random()*-160-40)+"px");
@@ -412,6 +356,7 @@ f.style.top=(rect.top+rect.height/2)+"px";
     },800);
   }
 }
+
 function slide(row,lineIndex=null,dir=null){
   row=row.filter(n=>n);
 
@@ -419,7 +364,8 @@ function slide(row,lineIndex=null,dir=null){
     if(row[i]===row[i+1]){
       row[i]*=2;
       score+=row[i];
-createFireflies();
+      createFireflies();
+
       if(dir==="left") mergedCells.push([lineIndex,i]);
       if(dir==="right") mergedCells.push([lineIndex,3-i]);
       if(dir==="up") mergedCells.push([i,lineIndex]);
@@ -463,10 +409,10 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
-  playNote();
-  add();
-  draw();
-}
+    playNote();
+    add();
+    draw();
+  }
 }
 
 document.addEventListener("keydown",e=>{
