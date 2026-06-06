@@ -262,15 +262,29 @@ function playNote(){
   const osc=audioCtx.createOscillator();
   const gain=audioCtx.createGain();
 
-  osc.type="square";
-osc.frequency.value=440;
+  osc.type="triangle";
+  osc.frequency.value=freq;
 
-gain.gain.value=0.5;
+  gain.gain.setValueAtTime(
+    0.001,
+    audioCtx.currentTime
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.35,
+    audioCtx.currentTime+0.02
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audioCtx.currentTime+0.45
+  );
+
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
   osc.start();
-  osc.stop(audioCtx.currentTime+0.36);
+  osc.stop(audioCtx.currentTime+0.46);
 }
 function start(){
   grid=Array.from({length:4},()=>Array(4).fill(0));
