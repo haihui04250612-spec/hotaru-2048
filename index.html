@@ -187,11 +187,30 @@ function draw(){
 
       d.innerHTML=n?`<div>${n}</div><div class="small">${labels[n]||""}</div>`:"";
 
-      if(n>=1024)d.style.background="#3b2b63";
-      if(n>=2048){
-        d.style.background="#f6d878";
-        d.style.color="#111";
-      }
+      if(n===2)d.style.background="#284b3f";
+
+if(n===4)d.style.background="#315a7d";
+
+if(n===8)d.style.background="#3f5d8a";
+
+if(n===16)d.style.background="#5965a5";
+
+if(n===32)d.style.background="#8070b8";
+
+if(n===64)d.style.background="#c08a4a";
+
+if(n===128)d.style.background="#d8a94f";
+
+if(n===256)d.style.background="#e5bf63";
+
+if(n===512)d.style.background="#f0d878";
+
+if(n===1024)d.style.background="#ffe48a";
+
+if(n>=2048){
+  d.style.background="#fff2b0";
+  d.style.color="#111";
+}
 
       board.appendChild(d);
     });
