@@ -219,8 +219,51 @@ let grid,score,startX,startY;
 let newCell=null;
 let mergedCells=[];
 let musicPlaying=false;
+let audioCtx=null;
+let noteIndex=0;
+
+const melody=[
+  523.25,587.33,659.25,783.99,
+  659.25,587.33,523.25,392.00,
+  440.00,523.25,587.33,659.25,
+  783.99,659.25,587.33,523.25
+];
+
+async function unlockNoteSound(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+  if(audioCtx.state==="suspended"){
+    await audioCtx.resume();
+  }
+}
+
+function playNote(){
+  if(!audioCtx) return;
+
+  const freq=melody[noteIndex % melody.length];
+  noteIndex++;
+
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.type="sine";
+  osc.frequency.value=freq;
+
+  gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.28,audioCtx.currentTime+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.22);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+0.23);
+}
 
 async function toggleMusic(){
+  await unlockNoteSound();
+
   if(musicPlaying){
     bgm.pause();
     musicPlaying=false;
@@ -379,7 +422,9 @@ function slide(row,lineIndex=null,dir=null){
   return row;
 }
 
-function move(dir){
+async function move(dir){
+  await unlockNoteSound();
+
   let old=JSON.stringify(grid);
   mergedCells=[];
 
@@ -406,6 +451,7 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
+    playNote();
     add();
     draw();
   }
