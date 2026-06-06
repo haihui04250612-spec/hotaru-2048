@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>萤火虫2048</title>
+<style>
+body{
+  margin:0;
+  background:#0b1020;
+  color:white;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+  text-align:center;
+}
+h1{margin-top:30px;color:#f6d878;}
+#score{margin:10px;font-size:18px;}
+#board{
+  width:320px;height:320px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  touch-action:none;
+}
+.cell{
+  background:#1c2945;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  font-size:20px;
+}
+.small{
+  font-size:12px;
+  opacity:.8;
+  margin-top:4px;
+}
+button{
+  padding:10px 18px;
+  border:none;
+  border-radius:12px;
+  background:#f6d878;
+}
+</style>
+</head>
+<body>
+
+<h1>🌌 萤火虫2048</h1>
+<div id="score">Score: 0</div>
+<div id="board"></div>
+<button onclick="start()">重新开始</button>
+
+<script>
+const labels={
+2:"🪲萤",4:"✨微光",8:"⭐星尘",16:"🌙月色",
+32:"🎐风铃",64:"🌃夏夜",128:"📞电话",256:"📖日记",
+512:"💭想念",1024:"🌌小由已上线",2048:"💙愿妳平安而幸福"
+};
+
+let grid,score,startX,startY;
+
+function start(){
+  grid=Array.from({length:4},()=>Array(4).fill(0));
+  score=0;
+  add();add();draw();
+}
+
+function add(){
+  let empty=[];
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++)if(!grid[r][c])empty.push([r,c]);
+  if(!empty.length)return;
+  let [r,c]=empty[Math.floor(Math.random()*empty.length)];
+  grid[r][c]=Math.random()<0.9?2:4;
+}
+
+function draw(){
+  document.getElementById("score").textContent="Score: "+score;
+  board.innerHTML="";
+  grid.flat().forEach(n=>{
+    let d=document.createElement("div");
+    d.className="cell";
+    d.innerHTML=n?`<div>${n}</div><div class="small">${labels[n]||""}</div>`:"";
+    if(n>=1024)d.style.background="#3b2b63";
+    if(n>=2048){d.style.background="#f6d878";d.style.color="#111";}
+    board.appendChild(d);
+  });
+}
+
+function slide(row){
+  row=row.filter(n=>n);
+  for(let i=0;i<row.length-1;i++){
+    if(row[i]===row[i+1]){
+      row[i]*=2;
+      score+=row[i];
+      if(row[i]===1024)alert("🌌 小由已上线");
+      if(row[i]===2048)alert("愿妳平安而幸福");
+      row.splice(i+1,1);
+    }
+  }
+  while(row.length<4)row.push(0);
+  return row;
+}
+
+function move(dir){
+  let old=JSON.stringify(grid);
+  if(dir==="left") grid=grid.map(slide);
+  if(dir==="right") grid=grid.map(r=>slide(r.reverse()).reverse());
+  if(dir==="up"){
+    for(let c=0;c<4;c++){
+      let col=slide(grid.map(r=>r[c]));
+      for(let r=0;r<4;r++)grid[r][c]=col[r];
+    }
+  }
+  if(dir==="down"){
+    for(let c=0;c<4;c++){
+      let col=slide(grid.map(r=>r[c]).reverse()).reverse();
+      for(let r=0;r<4;r++)grid[r][c]=col[r];
+    }
+  }
+  if(JSON.stringify(grid)!==old){add();draw();}
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft")move("left");
+  if(e.key==="ArrowRight")move("right");
+  if(e.key==="ArrowUp")move("up");
+  if(e.key==="ArrowDown")move("down");
+});
+
+board.addEventListener("touchstart",e=>{
+  startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+});
+board.addEventListener("touchend",e=>{
+  let dx=e.changedTouches[0].clientX-startX;
+  let dy=e.changedTouches[0].clientY-startY;
+  if(Math.abs(dx)>Math.abs(dy)) move(dx>0?"right":"left");
+  else move(dy>0?"down":"up");
+});
+
+start();
+</script>
+</body>
+</html>
