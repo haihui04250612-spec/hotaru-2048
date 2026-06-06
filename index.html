@@ -249,7 +249,7 @@ function playNote(){
 
   osc.type="sine";
   osc.frequency.value=freq;
-
+initSound();
   gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.08,audioCtx.currentTime+0.01);
   gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.22);
@@ -480,6 +480,17 @@ board.addEventListener("touchend",e=>{
 });
 
 start();
+document.body.addEventListener(
+  "touchstart",
+  initSound,
+  { once:true }
+);
+
+document.body.addEventListener(
+  "click",
+  initSound,
+  { once:true }
+);
 </script>
 </body>
 </html>
