@@ -128,14 +128,35 @@ function add(){
 function draw(){
   document.getElementById("score").textContent="Score: "+score;
   board.innerHTML="";
-  grid.flat().forEach(n=>{
-    let d=document.createElement("div");
-    d.className="cell";
-    d.innerHTML=n?`<div>${n}</div><div class="small">${labels[n]||""}</div>`:"";
-    if(n>=1024)d.style.background="#3b2b63";
-    if(n>=2048){d.style.background="#f6d878";d.style.color="#111";}
-    board.appendChild(d);
+
+  grid.forEach((row,r)=>{
+    row.forEach((n,c)=>{
+      let d=document.createElement("div");
+      d.className="cell";
+
+      if(newCell && newCell[0]===r && newCell[1]===c){
+        d.classList.add("new");
+      }
+
+      if(mergedCells.some(pos=>pos[0]===r && pos[1]===c)){
+        d.classList.add("merged");
+      }
+
+      d.innerHTML=n?`<div>${n}</div><div class="small">${labels[n]||""}</div>`:"";
+
+      if(n>=1024)d.style.background="#3b2b63";
+      if(n>=2048){
+        d.style.background="#f6d878";
+        d.style.color="#111";
+      }
+
+      board.appendChild(d);
+    });
   });
+
+  newCell=null;
+  mergedCells=[];
+}
 }
 
 function slide(row){
