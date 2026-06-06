@@ -182,6 +182,8 @@ button{
 
 <body>
 
+<audio id="bgm" src="bgm.mp3" loop></audio>
+
 <div id="stars"></div>
 
 <div class="firefly-bg" style="left:10%;top:80%;"></div>
@@ -199,7 +201,7 @@ button{
 
 <div class="controls">
   <button onclick="start()">重新开始</button>
-  <button onclick="unlockSound()">🔊 开声音</button>
+  <button onclick="toggleMusic()" id="musicBtn">🔊 开音乐</button>
 </div>
 
 <script>
@@ -210,61 +212,28 @@ const labels={
 };
 
 const board=document.getElementById("board");
+const bgm=document.getElementById("bgm");
+const musicBtn=document.getElementById("musicBtn");
 
 let grid,score,startX,startY;
 let newCell=null;
 let mergedCells=[];
-let audioCtx=null;
-let noteIndex=0;
-let soundReady=false;
+let musicPlaying=false;
 
-const melody=[
-  523.25,587.33,659.25,783.99,
-  659.25,587.33,523.25,392.00,
-  440.00,523.25,587.33,659.25,
-  783.99,659.25,587.33,523.25
-];
-
-function playNote(){
-  if(!soundReady || !audioCtx) return;
-
-  const freq=melody[noteIndex % melody.length];
-  noteIndex++;
-
-  const osc=audioCtx.createOscillator();
-  const gain=audioCtx.createGain();
-
-  osc.type="sine";
-  osc.frequency.value=freq;
-  gain.gain.value=0.6;
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start();
-  osc.stop(audioCtx.currentTime+0.12);
-}
-
-async function unlockSound(){
-  if(!audioCtx){
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+async function toggleMusic(){
+  if(musicPlaying){
+    bgm.pause();
+    musicPlaying=false;
+    musicBtn.textContent="🔊 开音乐";
+  }else{
+    try{
+      await bgm.play();
+      musicPlaying=true;
+      musicBtn.textContent="🔇 关音乐";
+    }catch(e){
+      alert("音乐播放失败，请再点一次按钮");
+    }
   }
-
-  await audioCtx.resume();
-  soundReady=true;
-
-  const osc=audioCtx.createOscillator();
-  const gain=audioCtx.createGain();
-
-  osc.type="sine";
-  osc.frequency.value=880;
-  gain.gain.value=0.8;
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start();
-  osc.stop(audioCtx.currentTime+0.25);
 }
 
 function start(){
@@ -437,7 +406,6 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
-    playNote();
     add();
     draw();
   }
