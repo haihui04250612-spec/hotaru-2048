@@ -5,30 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>萤火虫2048</title>
 
-.cell.merged{
-  animation: merge .22s ease-out;
-}
-
-@keyframes pop{
-  0%{
-    transform:scale(.4);
-    opacity:0;
-  }
-  100%{
-    transform:scale(1);
-    opacity:1;
-  }
-}
-
-@keyframes merge{
-  0%{transform:scale(1);}
-  50%{transform:scale(1.18);}
-  100%{transform:scale(1);}
-}
 <style>
 body{
   margin:0;
   min-height:100vh;
+  position:relative;
   background:
     radial-gradient(circle at 20% 20%, rgba(246,216,120,.12), transparent 25%),
     radial-gradient(circle at 80% 30%, rgba(120,180,255,.10), transparent 28%),
@@ -38,87 +19,7 @@ body{
   text-align:center;
   overflow:hidden;
 }
-h1{margin-top:30px;color:#f6d878;}
-#score{margin:10px;font-size:18px;}
-#board{
-  position:relative;
-z-index:2;
-  width:320px;
-  height:320px;
-  margin:20px auto;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  grid-template-rows:repeat(4,1fr);
-  gap:8px;
-  touch-action:none;
-  user-select:none;
-}
-.cell{
-  background:#24365e;
-  border-radius:12px;
-  display:flex;
-  flex-direction:column;
-  box-shadow:
-0 0 10px rgba(255,255,255,.05),
-0 0 20px rgba(246,216,120,.06);
-backdrop-filter:blur(2px);
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  font-size:20px;
-  min-width:0;
-  min-height:0;
-  overflow:hidden;
-  box-sizing:border-box;
-  transition:background .2s,color .2s;
-}
-.small{
-  font-size:11px;
-  opacity:.8;
-  margin-top:4px;
-  max-width:100%;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-button{
-  padding:10px 18px;
-  border:none;
-  border-radius:12px;
-  background:#f6d878;
-  color:#0b1020;
-  font-weight:bold;
-  box-shadow:
-    0 0 12px rgba(246,216,120,.35),
-    0 0 25px rgba(246,216,120,.18);
-}
-.cell.new{
-  animation: pop .18s ease-out;
-}
-</style>
-</head>
-<body>
-  <div id="stars"></div>
-position:relative;
-h1{
-  margin-top:30px;
-  color:#f6d878;
-  text-shadow:0 0 14px rgba(246,216,120,.45);
-}
-<div id="score">Score: 0</div>
-<div id="board"></div>
-<button onclick="start()">重新开始</button>
 
-<script>
-const labels={
-2:"🪲萤",4:"✨微光",8:"⭐星尘",16:"🌙月色",
-32:"🎐风铃",64:"🌃夏夜",128:"📞电话",256:"📖日记",
-512:"💭想念",1024:"🌌小由已上线",2048:"💙愿妳平安而幸福"
-};
-
-let grid,score,startX,startY;
-let newCell=null;
-let mergedCells=[];
 #stars{
   position:fixed;
   inset:0;
@@ -132,10 +33,125 @@ let mergedCells=[];
     radial-gradient(circle at 60% 80%, rgba(255,255,255,.8) 1px, transparent 2px);
 }
 
+h1{
+  position:relative;
+  z-index:2;
+  margin-top:30px;
+  color:#f6d878;
+  text-shadow:0 0 14px rgba(246,216,120,.45);
+}
+
+#score{
+  position:relative;
+  z-index:2;
+  margin:10px;
+  font-size:18px;
+}
+
+#board{
+  position:relative;
+  z-index:2;
+  width:320px;
+  height:320px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(4,1fr);
+  gap:8px;
+  touch-action:none;
+  user-select:none;
+}
+
+.cell{
+  background:#24365e;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  font-size:20px;
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+  box-sizing:border-box;
+  transition:background .2s,color .2s;
+  box-shadow:
+    0 0 10px rgba(255,255,255,.05),
+    0 0 20px rgba(246,216,120,.06);
+  backdrop-filter:blur(2px);
+}
+
+.small{
+  font-size:11px;
+  opacity:.8;
+  margin-top:4px;
+  max-width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+button{
+  position:relative;
+  z-index:2;
+  padding:10px 18px;
+  border:none;
+  border-radius:12px;
+  background:#f6d878;
+  color:#0b1020;
+  font-weight:bold;
+  box-shadow:
+    0 0 12px rgba(246,216,120,.35),
+    0 0 25px rgba(246,216,120,.18);
+}
+
+.cell.new{
+  animation: pop .18s ease-out;
+}
+
+.cell.merged{
+  animation: merge .22s ease-out;
+}
+
+@keyframes pop{
+  0%{transform:scale(.4);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
+}
+
+@keyframes merge{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.18);}
+  100%{transform:scale(1);}
+}
+</style>
+</head>
+
+<body>
+<div id="stars"></div>
+
+<h1>🌌 萤火虫2048</h1>
+<div id="score">Score: 0</div>
+<div id="board"></div>
+<button onclick="start()">重新开始</button>
+
+<script>
+const labels={
+  2:"🪲萤",4:"✨微光",8:"⭐星尘",16:"🌙月色",
+  32:"🎐风铃",64:"🌃夏夜",128:"📞电话",256:"📖日记",
+  512:"💭想念",1024:"🌌小由已上线",2048:"💙愿妳平安而幸福"
+};
+
+let grid,score,startX,startY;
+let newCell=null;
+let mergedCells=[];
+
 function start(){
   grid=Array.from({length:4},()=>Array(4).fill(0));
   score=0;
-  add();add();draw();
+  add();
+  add();
+  draw();
 }
 
 function add(){
@@ -184,7 +200,6 @@ function draw(){
   newCell=null;
   mergedCells=[];
 }
-}
 
 function slide(row,lineIndex=null,dir=null){
   row=row.filter(n=>n);
@@ -209,6 +224,7 @@ function slide(row,lineIndex=null,dir=null){
   while(row.length<4)row.push(0);
   return row;
 }
+
 function move(dir){
   let old=JSON.stringify(grid);
   mergedCells=[];
@@ -249,11 +265,14 @@ document.addEventListener("keydown",e=>{
 });
 
 board.addEventListener("touchstart",e=>{
-  startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+  startX=e.touches[0].clientX;
+  startY=e.touches[0].clientY;
 });
+
 board.addEventListener("touchmove",e=>{
   e.preventDefault();
 },{passive:false});
+
 board.addEventListener("touchend",e=>{
   let dx=e.changedTouches[0].clientX-startX;
   let dy=e.changedTouches[0].clientY-startY;
