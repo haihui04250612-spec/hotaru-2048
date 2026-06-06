@@ -191,7 +191,29 @@ button{
 <div id="score">Score: 0</div>
 <div id="board"></div>
 <button onclick="start()">重新开始</button>
-<button onclick="unlockSound()">🔊 开声音</button>
+<button onclick="testSound()">🔊 开声音</button>
+function testSound(){
+
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+
+  audioCtx.resume();
+
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.type="sine";
+  osc.frequency.value=880;
+
+  gain.gain.value=0.8;
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+1);
+}
 <script>
 const labels={
   2:"🪲萤",4:"✨微光",8:"⭐星尘",16:"🌙月色",
