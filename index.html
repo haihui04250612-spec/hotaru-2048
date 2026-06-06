@@ -421,8 +421,8 @@ function slide(row,lineIndex=null,dir=null){
   return row;
 }
 
-async function move(dir){
-  await unlockNoteSound();
+function move(dir){
+  initSound();
 
   let old=JSON.stringify(grid);
   mergedCells=[];
