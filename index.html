@@ -44,6 +44,8 @@ body{
 h1{margin-top:30px;color:#f6d878;}
 #score{margin:10px;font-size:18px;}
 #board{
+  position:relative;
+z-index:2;
   width:320px;
   height:320px;
   margin:20px auto;
@@ -96,7 +98,8 @@ button{
 </style>
 </head>
 <body>
-
+  <div id="stars"></div>
+position:relative;
 h1{
   margin-top:30px;
   color:#f6d878;
@@ -116,6 +119,18 @@ const labels={
 let grid,score,startX,startY;
 let newCell=null;
 let mergedCells=[];
+#stars{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(255,255,255,.8) 1px, transparent 2px),
+    radial-gradient(circle at 70% 15%, rgba(255,255,255,.7) 1px, transparent 2px),
+    radial-gradient(circle at 80% 35%, rgba(255,255,255,.6) 1px, transparent 2px),
+    radial-gradient(circle at 15% 70%, rgba(255,255,255,.7) 1px, transparent 2px),
+    radial-gradient(circle at 60% 80%, rgba(255,255,255,.8) 1px, transparent 2px);
+}
 
 function start(){
   grid=Array.from({length:4},()=>Array(4).fill(0));
