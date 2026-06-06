@@ -251,7 +251,7 @@ function playNote(){
   osc.frequency.value=freq;
 
   gain.gain.setValueAtTime(0.001,audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.28,audioCtx.currentTime+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.08,audioCtx.currentTime+0.01);
   gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.22);
 
   osc.connect(gain);
