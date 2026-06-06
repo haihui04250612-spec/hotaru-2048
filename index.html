@@ -229,15 +229,15 @@ const melody=[
   783.99,659.25,587.33,523.25
 ];
 
-async function unlockNoteSound(){
+function initSound(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   }
+
   if(audioCtx.state==="suspended"){
-    await audioCtx.resume();
+    audioCtx.resume();
   }
 }
-
 function playNote(){
   if(!audioCtx) return;
 
