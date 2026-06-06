@@ -148,6 +148,53 @@ button{
     opacity:0;
   }
 }
+.firefly-bg:nth-of-type(1){
+  left:10%;
+  top:80%;
+}
+
+.firefly-bg:nth-of-type(2){
+  left:25%;
+  top:60%;
+}
+
+.firefly-bg:nth-of-type(3){
+  left:70%;
+  top:75%;
+}
+
+.firefly-bg:nth-of-type(4){
+  left:85%;
+  top:40%;
+}
+
+.firefly-bg:nth-of-type(5){
+  left:55%;
+  top:85%;
+}
+
+@keyframes floatFirefly{
+  0%{
+    transform:translate(0,0);
+  }
+
+  50%{
+    transform:translate(30px,-60px);
+  }
+
+  100%{
+    transform:translate(0,0);
+  }
+}
+
+@keyframes blinkFirefly{
+  0%,100%{
+    opacity:.25;
+  }
+
+  50%{
+    opacity:1;
+  }
 </style>
 </head>
 
