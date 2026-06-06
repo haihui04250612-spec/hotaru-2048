@@ -92,9 +92,15 @@ h1{
   text-overflow:ellipsis;
 }
 
-button{
+.controls{
   position:relative;
   z-index:2;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+
+button{
   padding:10px 18px;
   border:none;
   border-radius:12px;
@@ -190,10 +196,12 @@ button{
 <h1>🌌 萤火虫2048</h1>
 <div id="score">Score: 0</div>
 <div id="board"></div>
-<button onclick="start()">重新开始</button>
-<button onclick="testSound()">🔊 开声音</button>
 
-  if
+<div class="controls">
+  <button onclick="start()">重新开始</button>
+  <button onclick="unlockSound()">🔊 开声音</button>
+</div>
+
 <script>
 const labels={
   2:"🪲萤",4:"✨微光",8:"⭐星尘",16:"🌙月色",
@@ -208,6 +216,7 @@ let newCell=null;
 let mergedCells=[];
 let audioCtx=null;
 let noteIndex=0;
+let soundReady=false;
 
 const melody=[
   523.25,587.33,659.25,783.99,
@@ -217,10 +226,7 @@ const melody=[
 ];
 
 function playNote(){
-
-  if(!audioCtx){
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  }
+  if(!soundReady || !audioCtx) return;
 
   const freq=melody[noteIndex % melody.length];
   noteIndex++;
@@ -230,7 +236,6 @@ function playNote(){
 
   osc.type="sine";
   osc.frequency.value=freq;
-
   gain.gain.value=0.6;
 
   osc.connect(gain);
@@ -238,6 +243,28 @@ function playNote(){
 
   osc.start();
   osc.stop(audioCtx.currentTime+0.12);
+}
+
+async function unlockSound(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  }
+
+  await audioCtx.resume();
+  soundReady=true;
+
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  osc.type="sine";
+  osc.frequency.value=880;
+  gain.gain.value=0.8;
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+0.25);
 }
 
 function start(){
@@ -410,10 +437,10 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
-    setTimeout(playNote,10);
+    playNote();
     add();
     draw();
-}
+  }
 }
 
 document.addEventListener("keydown",e=>{
@@ -440,50 +467,6 @@ board.addEventListener("touchend",e=>{
 });
 
 start();
-
-async function unlockSound(){
-  if(!audioCtx){
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  }
-
-  await audioCtx.resume();
-
-  const osc=audioCtx.createOscillator();
-  const gain=audioCtx.createGain();
-
-  osc.type="square";
-  osc.frequency.value=440;
-  gain.gain.value=0.5;
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start();
-  osc.stop(audioCtx.currentTime+0.3);
-}
-
-document.body.addEventListener("touchstart",unlockSound,{once:true});
-function testSound(){
-(!audioCtx){
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  }
-
-  audioCtx.resume();
-
-  const osc=audioCtx.createOscillator();
-  const gain=audioCtx.createGain();
-
-  osc.type="sine";
-  osc.frequency.value=880;
-
-  gain.gain.value=0.8;
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start();
-  osc.stop(audioCtx.currentTime+1);
-}
 </script>
 </body>
 </html>
