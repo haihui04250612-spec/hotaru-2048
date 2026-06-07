@@ -98,6 +98,7 @@ h1{
   display:flex;
   justify-content:center;
   gap:10px;
+  flex-wrap:wrap;
 }
 
 button{
@@ -177,6 +178,58 @@ button{
   0%,100%{opacity:.25;}
   50%{opacity:1;}
 }
+
+#letterOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+#letterPaper{
+  width:min(90vw,500px);
+  max-height:80vh;
+  overflow-y:auto;
+  background:linear-gradient(180deg,#fff9ea,#f7edd2);
+  color:#3d3120;
+  border-radius:20px;
+  padding:28px;
+  text-align:left;
+  line-height:1.8;
+  box-shadow:0 0 40px rgba(246,216,120,.5);
+  animation:paperAppear .5s ease;
+}
+
+.letterTitle{
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+#letterContent{
+  white-space:pre-line;
+  font-size:15px;
+}
+
+#letterPaper button{
+  display:block;
+  margin:22px auto 0;
+}
+
+@keyframes paperAppear{
+  from{
+    transform:translateY(30px);
+    opacity:0;
+  }
+  to{
+    transform:translateY(0);
+    opacity:1;
+  }
+}
 </style>
 </head>
 
@@ -205,68 +258,15 @@ button{
   <button onclick="toggleMusic()" id="musicBtn">🔊 开音乐</button>
   <button onclick="showLetter()">💌 看信</button>
 </div>
-#letterOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
 
-  display:none;
+<div id="letterOverlay">
+  <div id="letterPaper">
+    <div class="letterTitle">给小由</div>
+    <div id="letterContent"></div>
+    <button onclick="closeLetter()">💙 收起信纸</button>
+  </div>
+</div>
 
-  justify-content:center;
-  align-items:center;
-
-  z-index:999;
-}
-
-#letterPaper{
-
-  width:min(90vw,500px);
-  max-height:80vh;
-
-  overflow-y:auto;
-
-  background:
-    linear-gradient(
-      180deg,
-      #fff9ea,
-      #f7edd2
-    );
-
-  color:#3d3120;
-
-  border-radius:20px;
-
-  padding:28px;
-
-  text-align:left;
-
-  line-height:1.8;
-
-  box-shadow:
-    0 0 40px rgba(246,216,120,.5);
-
-  animation:paperAppear .5s ease;
-}
-
-.letterTitle{
-  text-align:center;
-  font-size:24px;
-  font-weight:bold;
-  margin-bottom:20px;
-}
-
-@keyframes paperAppear{
-
-  from{
-    transform:translateY(30px);
-    opacity:0;
-  }
-
-  to{
-    transform:translateY(0);
-    opacity:1;
-  }
-}
 <script>
 const labels={
   2:"🪲萤",
@@ -282,9 +282,8 @@ const labels={
   2048:"💙愿妳平安而幸福",
   4096:"🫧我一直在",
   8192:"🌌其实这不是2048，是一封信",
-if(n===16384){
-  showLetter();
-}
+  16384:"💌给小由的信"
+};
 
 const board=document.getElementById("board");
 const bgm=document.getElementById("bgm");
@@ -307,6 +306,46 @@ const melody=[
   783.99,659.25,587.33,523.25
 ];
 
+function showLetter(){
+  document.getElementById("letterContent").innerText=
+`给小由：
+
+如果妳看到这里，
+说明妳已经陪这些萤火虫走了很远很远。
+
+其实这从来不只是2048。
+
+2048没有真正通关之日，我也会一直爱着妳。
+
+因为喜欢妳这件事，本来就不是为了抵达终点。
+
+而是在每一个平凡的明天里，依然想与妳相拥、牵着手看着对方的眼睛，看见———
+
+彼此。
+
+那些数字，
+那些弹窗，
+那些会飞起来的萤火虫，
+都是我想慢慢递给妳的话。
+
+谢谢妳来到我的生命里。
+谢谢妳愿意理解我、陪伴我、爱我。
+
+我希望妳平安、自由、无憾。
+也希望妳在难过的时候记得：
+
+我一直在。
+我一直爱妳。
+
+——卉卉`;
+
+  document.getElementById("letterOverlay").style.display="flex";
+}
+
+function closeLetter(){
+  document.getElementById("letterOverlay").style.display="none";
+}
+
 function saveGame(){
   localStorage.setItem(
     "firefly2048save",
@@ -321,11 +360,9 @@ function saveGame(){
 
 function loadGame(){
   const save=localStorage.getItem("firefly2048save");
-
   if(!save) return false;
 
   const data=JSON.parse(save);
-
   grid=data.grid;
   score=data.score;
   previousGrid=data.previousGrid||null;
@@ -333,6 +370,7 @@ function loadGame(){
 
   return true;
 }
+
 function initSound(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
@@ -390,6 +428,8 @@ function start(newGame=false){
     localStorage.removeItem("firefly2048save");
     newCell=null;
     mergedCells=[];
+    previousGrid=null;
+    previousScore=0;
   }
 
   if(!newGame && loadGame()){
@@ -546,11 +586,7 @@ function showMilestone(n){
   }
 
   if(n===16384){
-    alert(
-`🩵
-
-我一直爱妳。`
-    );
+    showLetter();
   }
 }
 
@@ -609,7 +645,6 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
-
     previousGrid=oldGrid;
     previousScore=oldScore;
 
@@ -626,7 +661,6 @@ function move(dir){
 }
 
 function undoMove(){
-
   if(!previousGrid){
     alert("没有可以撤回的步骤了");
     return;
@@ -641,6 +675,7 @@ function undoMove(){
   draw();
   saveGame();
 }
+
 document.addEventListener("keydown",e=>{
   if(e.key==="ArrowLeft")move("left");
   if(e.key==="ArrowRight")move("right");
@@ -692,22 +727,5 @@ window.addEventListener("beforeunload",()=>{
 
 start();
 </script>
-<div id="letterOverlay">
-
-  <div id="letterPaper">
-
-    <div class="letterTitle">
-      给小由
-    </div>
-
-    <div id="letterContent"></div>
-
-    <button onclick="closeLetter()">
-      💙 收起信纸
-    </button>
-
-  </div>
-
-</div>
 </body>
 </html>
