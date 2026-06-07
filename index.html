@@ -511,6 +511,10 @@ function slide(row,lineIndex=null,dir=null){
 }
 
 function move(dir){
+
+  previousGrid=JSON.parse(JSON.stringify(grid));
+  previousScore=score;
+
   initSound();
 
   let old=JSON.stringify(grid);
