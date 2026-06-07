@@ -227,6 +227,29 @@ const musicBtn=document.getElementById("musicBtn");
 
 let grid,score,startX,startY;
 let bestScore=Number(localStorage.getItem("bestScore"))||0;
+function saveGame(){
+  localStorage.setItem(
+    "firefly2048save",
+    JSON.stringify({
+      grid:grid,
+      score:score
+    })
+  );
+}
+
+function loadGame(){
+  const save=
+    localStorage.getItem("firefly2048save");
+
+  if(!save) return false;
+
+  const data=JSON.parse(save);
+
+  grid=data.grid;
+  score=data.score;
+
+  return true;
+}
 let newCell=null;
 let mergedCells=[];
 let musicPlaying=false;
