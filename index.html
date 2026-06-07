@@ -469,13 +469,17 @@ if(row[i]===16384){
 function move(dir){
   initSound();
 
-  let old=JSON.stringify(grid);
-  mergedCells=[];
+ if(JSON.stringify(grid)!==old){
 
-  if(dir==="left"){
-    grid=grid.map((row,r)=>slide(row,r,"left"));
+  if(score>bestScore){
+    bestScore=score;
+    localStorage.setItem("bestScore",bestScore);
   }
 
+  playNote();
+  add();
+  draw();
+}
   if(dir==="right"){
     grid=grid.map((row,r)=>slide(row.reverse(),r,"right").reverse());
   }
