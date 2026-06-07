@@ -424,8 +424,37 @@ function slide(row,lineIndex=null,dir=null){
       if(dir==="up") mergedCells.push([i,lineIndex]);
       if(dir==="down") mergedCells.push([3-i,lineIndex]);
 
-      if(row[i]===1024)alert("🌌 小由已上线");
-      if(row[i]===2048)alert("愿妳平安而幸福");
+      if(row[i]===1024){
+  alert("🌌 小由已上线");
+}
+
+if(row[i]===2048){
+  alert("💙 愿妳平安而幸福");
+}
+
+if(row[i]===4096){
+  alert(
+`🫧 我一直在`
+  );
+}
+
+if(row[i]===8192){
+  alert(
+`🌌
+
+其实这不是2048。
+
+是一封信。`
+  );
+}
+
+if(row[i]===16384){
+  alert(
+`🩵
+
+我一直爱妳。`
+  );
+}
 
       row.splice(i+1,1);
     }
