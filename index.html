@@ -316,7 +316,8 @@ function add(){
 }
 
 function draw(){
-  document.getElementById("score").textContent="Score: "+score;
+  document.getElementById("score").innerHTML=
+  "Score: "+score+"<br>Best: "+bestScore;
   board.innerHTML="";
 
   grid.forEach((row,r)=>{
