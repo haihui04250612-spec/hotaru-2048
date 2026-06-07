@@ -249,7 +249,9 @@ function saveGame(){
     "firefly2048save",
     JSON.stringify({
       grid:grid,
-      score:score
+      score:score,
+      previousGrid:previousGrid,
+      previousScore:previousScore
     })
   );
 }
@@ -260,12 +262,14 @@ function loadGame(){
   if(!save) return false;
 
   const data=JSON.parse(save);
+
   grid=data.grid;
   score=data.score;
+  previousGrid=data.previousGrid||null;
+  previousScore=data.previousScore||0;
 
   return true;
 }
-
 function initSound(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
@@ -511,13 +515,12 @@ function slide(row,lineIndex=null,dir=null){
 }
 
 function move(dir){
-
-  previousGrid=JSON.parse(JSON.stringify(grid));
-  previousScore=score;
-
   initSound();
 
+  let oldGrid=JSON.parse(JSON.stringify(grid));
+  let oldScore=score;
   let old=JSON.stringify(grid);
+
   mergedCells=[];
 
   if(dir==="left"){
@@ -543,6 +546,10 @@ function move(dir){
   }
 
   if(JSON.stringify(grid)!==old){
+
+    previousGrid=oldGrid;
+    previousScore=oldScore;
+
     if(score>bestScore){
       bestScore=score;
       localStorage.setItem("bestScore",bestScore);
