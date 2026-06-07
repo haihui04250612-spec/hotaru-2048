@@ -315,12 +315,21 @@ async function toggleMusic(){
   }
 }
 
-function start(){
+function start(newGame=false){
+
+  if(!newGame && loadGame()){
+    draw();
+    return;
+  }
+
   grid=Array.from({length:4},()=>Array(4).fill(0));
   score=0;
+
   add();
   add();
   draw();
+
+  saveGame();
 }
 
 function add(){
