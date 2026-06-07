@@ -228,6 +228,8 @@ const bgm=document.getElementById("bgm");
 const musicBtn=document.getElementById("musicBtn");
 
 let grid,score,startX,startY;
+let previousGrid=null;
+let previousScore=0;
 let bestScore=Number(localStorage.getItem("bestScore"))||0;
 let newCell=null;
 let mergedCells=[];
