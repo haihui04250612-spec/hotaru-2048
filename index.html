@@ -195,12 +195,12 @@ button{
 <div class="firefly-bg" style="left:75%;top:20%;"></div>
 <div class="firefly-bg" style="left:15%;top:45%;"></div>
 
-<h1>🌌 萤火虫2048</h1>
+<h1 id="title">🌌 萤火虫2048</h1>
 <div id="score">Score: 0</div>
 <div id="board"></div>
 
 <div class="controls">
-<button onclick="start(true)">重新开始</button>
+  <button onclick="start(true)">重新开始</button>
   <button onclick="toggleMusic()" id="musicBtn">🔊 开音乐</button>
 </div>
 
@@ -221,35 +221,13 @@ const labels={
   8192:"🌌其实这不是2048，是一封信",
   16384:"🩵我一直爱妳"
 };
+
 const board=document.getElementById("board");
 const bgm=document.getElementById("bgm");
 const musicBtn=document.getElementById("musicBtn");
 
 let grid,score,startX,startY;
 let bestScore=Number(localStorage.getItem("bestScore"))||0;
-function saveGame(){
-  localStorage.setItem(
-    "firefly2048save",
-    JSON.stringify({
-      grid:grid,
-      score:score
-    })
-  );
-}
-
-function loadGame(){
-  const save=
-    localStorage.getItem("firefly2048save");
-
-  if(!save) return false;
-
-  const data=JSON.parse(save);
-
-  grid=data.grid;
-  score=data.score;
-
-  return true;
-}
 let newCell=null;
 let mergedCells=[];
 let musicPlaying=false;
@@ -262,6 +240,28 @@ const melody=[
   440.00,523.25,587.33,659.25,
   783.99,659.25,587.33,523.25
 ];
+
+function saveGame(){
+  localStorage.setItem(
+    "firefly2048save",
+    JSON.stringify({
+      grid:grid,
+      score:score
+    })
+  );
+}
+
+function loadGame(){
+  const save=localStorage.getItem("firefly2048save");
+
+  if(!save) return false;
+
+  const data=JSON.parse(save);
+  grid=data.grid;
+  score=data.score;
+
+  return true;
+}
 
 function initSound(){
   if(!audioCtx){
@@ -316,6 +316,11 @@ async function toggleMusic(){
 }
 
 function start(newGame=false){
+  if(newGame){
+    localStorage.removeItem("firefly2048save");
+    newCell=null;
+    mergedCells=[];
+  }
 
   if(!newGame && loadGame()){
     draw();
@@ -324,16 +329,18 @@ function start(newGame=false){
 
   grid=Array.from({length:4},()=>Array(4).fill(0));
   score=0;
+  newCell=null;
+  mergedCells=[];
 
   add();
   add();
   draw();
-
   saveGame();
 }
 
 function add(){
   let empty=[];
+
   for(let r=0;r<4;r++){
     for(let c=0;c<4;c++){
       if(!grid[r][c]) empty.push([r,c]);
@@ -349,7 +356,8 @@ function add(){
 
 function draw(){
   document.getElementById("score").innerHTML=
-  "Score: "+score+"<br>Best: "+bestScore;
+    "Score: "+score+"<br>Best: "+bestScore;
+
   board.innerHTML="";
 
   grid.forEach((row,r)=>{
@@ -444,6 +452,38 @@ function createFireflies(){
   }
 }
 
+function showMilestone(n){
+  if(n===1024){
+    alert("🌌 小由已上线");
+  }
+
+  if(n===2048){
+    alert("💙 愿妳平安而幸福");
+  }
+
+  if(n===4096){
+    alert("🫧 我一直在");
+  }
+
+  if(n===8192){
+    alert(
+`🌌
+
+其实这不是2048。
+
+是一封信。`
+    );
+  }
+
+  if(n===16384){
+    alert(
+`🩵
+
+我一直爱妳。`
+    );
+  }
+}
+
 function slide(row,lineIndex=null,dir=null){
   row=row.filter(n=>n);
 
@@ -452,43 +492,12 @@ function slide(row,lineIndex=null,dir=null){
       row[i]*=2;
       score+=row[i];
       createFireflies();
+      showMilestone(row[i]);
 
       if(dir==="left") mergedCells.push([lineIndex,i]);
       if(dir==="right") mergedCells.push([lineIndex,3-i]);
       if(dir==="up") mergedCells.push([i,lineIndex]);
       if(dir==="down") mergedCells.push([3-i,lineIndex]);
-
-      if(row[i]===1024){
-  alert("🌌 小由已上线");
-}
-
-if(row[i]===2048){
-  alert("💙 愿妳平安而幸福");
-}
-
-if(row[i]===4096){
-  alert(
-`🫧 我一直在`
-  );
-}
-
-if(row[i]===8192){
-  alert(
-`🌌
-
-其实这不是2048。
-
-是一封信。`
-  );
-}
-
-if(row[i]===16384){
-  alert(
-`🩵
-
-我一直爱妳。`
-  );
-}
 
       row.splice(i+1,1);
     }
@@ -501,17 +510,13 @@ if(row[i]===16384){
 function move(dir){
   initSound();
 
- if(JSON.stringify(grid)!==old){
+  let old=JSON.stringify(grid);
+  mergedCells=[];
 
-  if(score>bestScore){
-    bestScore=score;
-    localStorage.setItem("bestScore",bestScore);
+  if(dir==="left"){
+    grid=grid.map((row,r)=>slide(row,r,"left"));
   }
 
-  playNote();
-add();
-draw();
-saveGame();
   if(dir==="right"){
     grid=grid.map((row,r)=>slide(row.reverse(),r,"right").reverse());
   }
@@ -531,9 +536,15 @@ saveGame();
   }
 
   if(JSON.stringify(grid)!==old){
+    if(score>bestScore){
+      bestScore=score;
+      localStorage.setItem("bestScore",bestScore);
+    }
+
     playNote();
     add();
     draw();
+    saveGame();
   }
 }
 
@@ -564,6 +575,26 @@ board.addEventListener("touchend",e=>{
   }else{
     move(dy>0?"down":"up");
   }
+});
+
+let titleClickCount=0;
+
+document.getElementById("title").addEventListener("click",()=>{
+  titleClickCount++;
+
+  if(titleClickCount>=5){
+    alert(
+`🌌 小由已上线
+
+其实一直都在。`
+    );
+
+    titleClickCount=0;
+  }
+});
+
+window.addEventListener("beforeunload",()=>{
+  saveGame();
 });
 
 start();
