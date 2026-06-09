@@ -313,7 +313,17 @@ const melody=[
   440.00,523.25,587.33,659.25,
   783.99,659.25,587.33,523.25
 ];
+const questions=[
+  "今天最想对卉卉说什么？",
+  "最近什么时候最想抱抱卉卉？",
+  "如果明天可以一起去任何地方，妳想去哪里？",
+  "妳第一次觉得喜欢卉卉是什么时候？",
+  "现在最想和卉卉一起做什么？",
+  "如果把今天写成交换日记，标题会是什么？"
+];
 
+let questionIndex=
+Number(localStorage.getItem("questionIndex"))||0;
 function showLetter(){
   document.getElementById("letterContent").innerText=
 `给小由：
