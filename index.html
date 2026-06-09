@@ -287,7 +287,8 @@ const labels={
 131072:"🫧故事还没有结束",
 262144:"🌌下一次见",
 524288:"💙永远太远了，那就见面吧"
-
+const diaryEndpoint =
+"https://formspree.io/f/xnjyvvev";
 const board=document.getElementById("board");
 const bgm=document.getElementById("bgm");
 const musicBtn=document.getElementById("musicBtn");
@@ -766,8 +767,63 @@ document.getElementById("title").addEventListener("click",()=>{
 window.addEventListener("beforeunload",()=>{
   saveGame();
 });
+function openDiary(){
+  document.getElementById(
+    "diaryOverlay"
+  ).style.display="flex";
+}
 
+function closeDiary(){
+  document.getElementById(
+    "diaryOverlay"
+  ).style.display="none";
+}
 start();
 </script>
+<div id="diaryOverlay"
+style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+justify-content:center;
+align-items:center;
+z-index:999;
+">
+
+<div
+style="
+width:min(90vw,500px);
+background:#fff9ea;
+color:#333;
+padding:24px;
+border-radius:20px;
+">
+
+<h2>📖 给卉卉的话</h2>
+
+<textarea
+id="diaryText"
+placeholder="想写什么都可以..."
+style="
+width:100%;
+height:180px;
+padding:12px;
+box-sizing:border-box;
+"
+></textarea>
+
+<br><br>
+
+<button onclick="submitDiary()">
+💌 送出
+</button>
+
+<button onclick="closeDiary()">
+关闭
+</button>
+
+</div>
+</div>
 </body>
 </html>
