@@ -297,6 +297,7 @@ const board=document.getElementById("board");
 const bgm=document.getElementById("bgm");
 const musicBtn=document.getElementById("musicBtn");
 
+let size=4;
 let grid,score,startX,startY;
 let previousGrid=null;
 let previousScore=0;
@@ -419,8 +420,7 @@ closeDiary();
 function loadGame(){
   const save=localStorage.getItem("firefly2048save");
   if(!save) return false;
-
-  try{
+i  try{
     const data=JSON.parse(save);
 
     if(
@@ -524,7 +524,7 @@ function start(newGame=false){
     return;
   }
 
-  grid=Array.from({length:4},()=>Array(4).fill(0));
+  grid=Array.from({length:size},()=>Array(size).fill(0));
   score=0;
   newCell=null;
   mergedCells=[];
@@ -680,6 +680,24 @@ if(n===16384){
     openDiary();
   },1000);
 
+  size=5;
+  board.style.width="400px";
+  board.style.height="400px";
+  board.style.gridTemplateColumns="repeat(5,1fr)";
+  board.style.gridTemplateRows="repeat(5,1fr)";
+
+  while(grid.length<5){
+    grid.push(Array(5).fill(0));
+  }
+
+  for(let r=0;r<5;r++){
+    while(grid[r].length<5){
+      grid[r].push(0);
+    }
+  }
+
+  saveGame();
+  draw();
 }
   if(n===32768){
   alert(
