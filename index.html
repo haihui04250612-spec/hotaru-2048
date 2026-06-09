@@ -363,6 +363,10 @@ function showLetter(){
 function closeLetter(){
   document.getElementById("letterOverlay").style.display="none";
 }
+function showQuestion(){
+  document.getElementById("diaryQuestion").textContent=
+    questions[questionIndex % questions.length];
+}
 async function submitDiary(){
 
   const text=
