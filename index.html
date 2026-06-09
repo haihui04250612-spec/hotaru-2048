@@ -349,7 +349,47 @@ function showLetter(){
 function closeLetter(){
   document.getElementById("letterOverlay").style.display="none";
 }
+async function submitDiary(){
 
+  const text=
+  document.getElementById(
+    "diaryText"
+  ).value.trim();
+
+  if(!text){
+    alert("写点什么吧");
+    return;
+  }
+
+  try{
+
+    await fetch(
+      diaryEndpoint,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          message:text
+        })
+      }
+    );
+
+    alert("💙 已送达");
+
+    document.getElementById(
+      "diaryText"
+    ).value="";
+
+    closeDiary();
+
+  }catch(e){
+
+    alert("发送失败");
+
+  }
+}
 function saveGame(){
   localStorage.setItem(
     "firefly2048save",
