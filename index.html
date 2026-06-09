@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>给小由的萤火虫</title>
 
 
 <style>
@@ -276,7 +276,16 @@ button{
     <button onclick="closeLetter()">💙 收起信纸</button>
   </div>
 </div>
-
+<div id="diaryOverlay"
+style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+justify-content:center;
+align-items:center;
+z-index:999;
+">
 <script>
 const labels={
   2:"🪲萤",
@@ -929,16 +938,7 @@ function updateDaysTogether(){
 updateDaysTogether();
 start();
 </script>
-<div id="diaryOverlay"
-style="
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.75);
-justify-content:center;
-align-items:center;
-z-index:999;
-">
+
 
 <div
 style="
