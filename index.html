@@ -394,16 +394,34 @@ async function submitDiary(){
 
   }
 }
-function saveGame(){
-  localStorage.setItem(
-    "firefly2048save",
-    JSON.stringify({
-      grid:grid,
-      score:score,
-      previousGrid:previousGrid,
-      previousScore:previousScore
-    })
-  );
+function loadGame(){
+  const save=localStorage.getItem("firefly2048save");
+  if(!save) return false;
+
+  try{
+    const data=JSON.parse(save);
+
+    if(
+      !data.grid ||
+      !Array.isArray(data.grid) ||
+      data.grid.length!==4
+    ){
+      localStorage.removeItem("firefly2048save");
+      return false;
+    }
+
+    grid=data.grid;
+    score=data.score||0;
+    previousGrid=data.previousGrid||null;
+    previousScore=data.previousScore||0;
+
+    return true;
+
+  }catch(e){
+    localStorage.removeItem("firefly2048save");
+    return false;
+  }
+}
 }
 
 function loadGame(){
