@@ -307,6 +307,7 @@ let mergedCells=[];
 let musicPlaying=false;
 let audioCtx=null;
 let noteIndex=0;
+let expandedShown=false;
 
 const melody=[
   523.25,587.33,659.25,783.99,
@@ -314,6 +315,7 @@ const melody=[
   440.00,523.25,587.33,659.25,
   783.99,659.25,587.33,523.25
 ];
+
 const questions=[
   "今天最想对卉卉说什么？",
   "最近什么时候最想抱抱卉卉？",
@@ -323,8 +325,38 @@ const questions=[
   "如果把今天写成交换日记，标题会是什么？"
 ];
 
-let questionIndex=
-Number(localStorage.getItem("questionIndex"))||0;
+let questionIndex=Number(localStorage.getItem("questionIndex"))||0;
+
+function applyBoardSize(){
+  const boardSize=size===5?400:320;
+  board.style.width=boardSize+"px";
+  board.style.height=boardSize+"px";
+  board.style.gridTemplateColumns=`repeat(${size},1fr)`;
+  board.style.gridTemplateRows=`repeat(${size},1fr)`;
+}
+
+function expandBoardToFive(){
+  if(size>=5) return;
+
+  size=5;
+  expandedShown=true;
+
+  while(grid.length<5){
+    grid.push(Array(5).fill(0));
+  }
+
+  for(let r=0;r<5;r++){
+    while(grid[r].length<5){
+      grid[r].push(0);
+    }
+  }
+
+  applyBoardSize();
+  saveGame();
+
+  alert("🌌 夜空变大了。\n\n故事还没有结束。");
+}
+
 function showLetter(){
   document.getElementById("letterContent").innerText=
 `给小由：
@@ -364,16 +396,14 @@ function showLetter(){
 function closeLetter(){
   document.getElementById("letterOverlay").style.display="none";
 }
+
 function showQuestion(){
   document.getElementById("diaryQuestion").textContent=
     questions[questionIndex % questions.length];
 }
-async function submitDiary(){
 
-  const text=
-  document.getElementById(
-    "diaryText"
-  ).value.trim();
+async function submitDiary(){
+  const text=document.getElementById("diaryText").value.trim();
 
   if(!text){
     alert("写点什么吧");
@@ -381,7 +411,6 @@ async function submitDiary(){
   }
 
   try{
-
     await fetch(
       diaryEndpoint,
       {
@@ -390,43 +419,51 @@ async function submitDiary(){
           "Content-Type":"application/json"
         },
         body:JSON.stringify({
+          question:questions[questionIndex % questions.length],
           message:text
         })
       }
     );
 
-  questionIndex++;
+    questionIndex++;
+    localStorage.setItem("questionIndex",questionIndex);
 
-localStorage.setItem(
-  "questionIndex",
-  questionIndex
-);
+    alert("💙 已送达");
 
-alert("💙 已送达");
+    document.getElementById("diaryText").value="";
+    showQuestion();
+    closeDiary();
 
-document.getElementById(
-  "diaryText"
-).value="";
-
-showQuestion();
-
-closeDiary();
   }catch(e){
-
     alert("发送失败");
-
   }
 }
+
+function saveGame(){
+  localStorage.setItem(
+    "firefly2048save",
+    JSON.stringify({
+      grid:grid,
+      score:score,
+      size:size,
+      previousGrid:previousGrid,
+      previousScore:previousScore,
+      expandedShown:expandedShown
+    })
+  );
+}
+
 function loadGame(){
   const save=localStorage.getItem("firefly2048save");
   if(!save) return false;
-i  try{
+
+  try{
     const data=JSON.parse(save);
 
     if(
       !data.grid ||
       !Array.isArray(data.grid) ||
-      data.grid.length!==4
+      data.grid.length<4
     ){
       localStorage.removeItem("firefly2048save");
       return false;
@@ -434,8 +471,15 @@ i  try{
 
     grid=data.grid;
     score=data.score||0;
+    size=data.size||grid.length||4;
     previousGrid=data.previousGrid||null;
     previousScore=data.previousScore||0;
+    expandedShown=data.expandedShown||false;
+
+    if(size<4) size=4;
+    if(size>5) size=5;
+
+    applyBoardSize();
 
     return true;
 
@@ -443,19 +487,6 @@ i  try{
     localStorage.removeItem("firefly2048save");
     return false;
   }
-}
-
-function loadGame(){
-  const save=localStorage.getItem("firefly2048save");
-  if(!save) return false;
-
-  const data=JSON.parse(save);
-  grid=data.grid;
-  score=data.score;
-  previousGrid=data.previousGrid||null;
-  previousScore=data.previousScore||0;
-
-  return true;
 }
 
 function initSound(){
@@ -513,10 +544,13 @@ async function toggleMusic(){
 function start(newGame=false){
   if(newGame){
     localStorage.removeItem("firefly2048save");
-    newCell=null;
-    mergedCells=[];
+    size=4;
     previousGrid=null;
     previousScore=0;
+    expandedShown=false;
+    newCell=null;
+    mergedCells=[];
+    applyBoardSize();
   }
 
   if(!newGame && loadGame()){
@@ -538,8 +572,8 @@ function start(newGame=false){
 function add(){
   let empty=[];
 
-  for(let r=0;r<4;r++){
-    for(let c=0;c<4;c++){
+  for(let r=0;r<size;r++){
+    for(let c=0;c<size;c++){
       if(!grid[r][c]) empty.push([r,c]);
     }
   }
@@ -555,6 +589,7 @@ function draw(){
   document.getElementById("score").innerHTML=
     "Score: "+score+"<br>Best: "+bestScore;
 
+  applyBoardSize();
   board.innerHTML="";
 
   grid.forEach((row,r)=>{
@@ -672,72 +707,58 @@ function showMilestone(n){
     );
   }
 
-if(n===16384){
+  if(n===16384){
+    showLetter();
 
-  showLetter();
+    setTimeout(()=>{
+      openDiary();
+    },1000);
 
-  setTimeout(()=>{
-    openDiary();
-  },1000);
-
-  size=5;
-  board.style.width="400px";
-  board.style.height="400px";
-  board.style.gridTemplateColumns="repeat(5,1fr)";
-  board.style.gridTemplateRows="repeat(5,1fr)";
-
-  while(grid.length<5){
-    grid.push(Array(5).fill(0));
+    setTimeout(()=>{
+      expandBoardToFive();
+      draw();
+    },300);
   }
 
-  for(let r=0;r<5;r++){
-    while(grid[r].length<5){
-      grid[r].push(0);
-    }
-  }
-
-  saveGame();
-  draw();
-}
   if(n===32768){
-  alert(
+    alert(
 `✨
 
 谢谢妳来到我的生命里。`
-  );
-}
+    );
+  }
 
-if(n===65536){
-  alert(
+  if(n===65536){
+    alert(
 `🌙
 
 谢谢妳是妳。`
-  );
-}
+    );
+  }
 
-if(n===131072){
-  alert(
+  if(n===131072){
+    alert(
 `🫧
 
 故事还没有结束。`
-  );
-}
+    );
+  }
 
-if(n===262144){
-  alert(
+  if(n===262144){
+    alert(
 `🌌
 
 下一次见。`
-  );
-}
+    );
+  }
 
-if(n===524288){
-  alert(
+  if(n===524288){
+    alert(
 `💙
 
 永远太远了，那就见面吧。`
-  );
-}
+    );
+  }
 }
 
 function slide(row,lineIndex=null,dir=null){
@@ -751,15 +772,15 @@ function slide(row,lineIndex=null,dir=null){
       showMilestone(row[i]);
 
       if(dir==="left") mergedCells.push([lineIndex,i]);
-      if(dir==="right") mergedCells.push([lineIndex,3-i]);
+      if(dir==="right") mergedCells.push([lineIndex,size-1-i]);
       if(dir==="up") mergedCells.push([i,lineIndex]);
-      if(dir==="down") mergedCells.push([3-i,lineIndex]);
+      if(dir==="down") mergedCells.push([size-1-i,lineIndex]);
 
       row.splice(i+1,1);
     }
   }
 
-  while(row.length<4)row.push(0);
+  while(row.length<size)row.push(0);
   return row;
 }
 
@@ -781,16 +802,16 @@ function move(dir){
   }
 
   if(dir==="up"){
-    for(let c=0;c<4;c++){
+    for(let c=0;c<size;c++){
       let col=slide(grid.map(r=>r[c]),c,"up");
-      for(let r=0;r<4;r++)grid[r][c]=col[r];
+      for(let r=0;r<size;r++)grid[r][c]=col[r];
     }
   }
 
   if(dir==="down"){
-    for(let c=0;c<4;c++){
+    for(let c=0;c<size;c++){
       let col=slide(grid.map(r=>r[c]).reverse(),c,"down").reverse();
-      for(let r=0;r<4;r++)grid[r][c]=col[r];
+      for(let r=0;r<size;r++)grid[r][c]=col[r];
     }
   }
 
@@ -818,6 +839,7 @@ function undoMove(){
 
   grid=JSON.parse(JSON.stringify(previousGrid));
   score=previousScore;
+  size=grid.length||4;
 
   previousGrid=null;
   previousScore=0;
@@ -874,19 +896,16 @@ document.getElementById("title").addEventListener("click",()=>{
 window.addEventListener("beforeunload",()=>{
   saveGame();
 });
+
 function openDiary(){
   showQuestion();
-
-  document.getElementById(
-    "diaryOverlay"
-  ).style.display="flex";
+  document.getElementById("diaryOverlay").style.display="flex";
 }
 
 function closeDiary(){
-  document.getElementById(
-    "diaryOverlay"
-  ).style.display="none";
+  document.getElementById("diaryOverlay").style.display="none";
 }
+
 start();
 </script>
 <div id="diaryOverlay"
