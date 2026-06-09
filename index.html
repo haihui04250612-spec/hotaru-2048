@@ -629,9 +629,15 @@ function showMilestone(n){
     );
   }
 
-  if(n===16384){
-    showLetter();
-  }
+if(n===16384){
+
+  showLetter();
+
+  setTimeout(()=>{
+    openDiary();
+  },1000);
+
+}
   if(n===32768){
   alert(
 `✨
