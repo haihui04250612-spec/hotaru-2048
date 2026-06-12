@@ -268,11 +268,11 @@ width:min(90vw,420px);
 
 <p>妳是小由吗？</p>
 
-<button onclick="enterAsYuu()">
+<button id="yuuYesBtn" type="button">
 💙 我是小由
 </button>
 
-<button onclick="closeYuuGate()">
+<button id="yuuNoBtn" type="button">
 ✨ 我不是小由
 </button>
 
@@ -994,6 +994,8 @@ function enterAsYuu(){
 
   }
 }
+document.getElementById("yuuYesBtn").addEventListener("click",enterAsYuu);
+document.getElementById("yuuNoBtn").addEventListener("click",closeYuuGate);
 function updateDaysTogether(){
 
   const startDate=new Date("2026-06-07T00:00:00+09:00");
