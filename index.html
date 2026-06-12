@@ -455,8 +455,32 @@ function closeLetter(){
 }
 
 function showQuestion(){
-  document.getElementById("diaryQuestion").textContent=
-    questions[questionIndex % questions.length];
+
+  const question=
+    questions[
+      questionIndex % questions.length
+    ];
+
+  document.getElementById(
+    "diaryQuestion"
+  ).innerHTML=
+  `
+  <div style="
+    font-size:13px;
+    color:#b58b2a;
+    margin-bottom:10px;
+  ">
+    ✨ 今日小问答
+  </div>
+
+  <div style="
+    font-size:18px;
+    line-height:1.8;
+    font-weight:bold;
+  ">
+    ${question}
+  </div>
+  `;
 }
 
 async function submitDiary(){
