@@ -962,6 +962,38 @@ function openDiary(){
 function closeDiary(){
   document.getElementById("diaryOverlay").style.display="none";
 }
+function closeYuuGate(){
+  document.getElementById("yuuGate").style.display="none";
+}
+
+function enterAsYuu(){
+
+  const answer=prompt(
+    "验证一下。\n\n妳的生日是哪一天？"
+  );
+
+  if(!answer) return;
+
+  if(
+    yuuBirthdayAnswers.includes(
+      answer.trim()
+    )
+  ){
+
+    closeYuuGate();
+
+    setTimeout(()=>{
+      openDiary();
+    },300);
+
+  }else{
+
+    alert(
+      "好像不太对哦。"
+    );
+
+  }
+}
 function updateDaysTogether(){
 
   const startDate=new Date("2026-06-07T00:00:00+09:00");
